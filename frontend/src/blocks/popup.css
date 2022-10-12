@@ -1,0 +1,242 @@
+.popup { 
+  width: 100%;
+  position: fixed;
+  font-family: "Inter", Arial, Helvetica, sans-serif;
+  display: flex;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s linear 0.5s, opacity 0.5s linear;
+  justify-content: center;
+  align-items: center;
+  background-color: #00000080;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.popup_open {
+  display: flex;
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+.popup__content {
+  min-height: 330px;
+  max-width: 430px;
+  background-color: white;
+  color: white;
+  box-shadow: 0px 0px 25px rgb(0 0 0 / 15%);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  justify-content: center;
+  padding: 34px 36px;
+  border: none;
+  box-sizing: border-box;
+  
+}
+
+.popup__content_content_preview {
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  max-width: 75vw;
+  width: auto;
+  height: auto;
+  display: flex;
+}
+
+.popup__image {
+  max-height: 75vh;
+  white-space: normal;
+}
+
+.popup__text {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+  color: #ffffff;
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+.popup__close {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  top: -40px;
+  right: -40px;
+  background-image: url(../images/close_icon.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent;
+  border: none;
+  box-sizing: border-box;
+}
+
+.popup__close:hover {
+  opacity: 0.6;
+  transform: rotate(45deg);
+  cursor: pointer;
+}
+
+.popup__title {
+  margin: 0;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 30px;
+  padding-bottom: 54px;
+  color: #000;
+}
+
+.popup__form {
+  width: 358px;
+}
+
+.popup__label {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 17px;
+  height: 27px;
+  padding-bottom: 13px;
+}
+
+.popup__input {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  border: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  width: 100%;
+  padding-bottom: 13px;
+}
+
+.popup__input_type_error {
+  font-family: "Inter", "Arial", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+  color: #ff0000;
+  opacity: 1;
+  text-decoration: none;
+  position: absolute;
+  top: 80%;
+  z-index: 1;
+}
+
+.popup__error {
+  font-size: 12px;
+  line-height: 15px;
+  color: #ff0000;
+  opacity: 0;
+  position: absolute;
+  top: calc(100% + 5px);
+  transition: opacity 0.3s;
+}
+
+.popup__error_visible {
+  opacity: 1;
+  color: red;
+  font-size: 12px;
+}
+
+.popup__button {
+  width: 100%;
+  height: 50px;
+  background-color: black;
+  color: white;
+  border-radius: 2px;
+  border: none;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+  margin-top: 18px;
+}
+
+.popup__button:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.popup__button_disabled {
+  background-color: #e5e5e5;
+  color: #000000;
+  border: 1px solid #000000;
+  opacity: 0.2;
+}
+
+.popup__button_disabled:hover {
+  opacity: 0.2;
+  cursor: default;
+}
+
+.popup__icon {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+  display: block;
+}
+
+.popup__status-message {
+  font-size: 24px;
+  font-weight: 900px;
+  color: black;
+  width: 100%;
+  text-align: center;
+  line-height: 29px;
+  margin-top: 32px;
+}
+
+@media screen and (max-width: 600px) {
+  .popup__content {
+    padding: 22px 25px;
+  }
+
+  .popup__close {
+    top: -45px;
+    right: 0;
+    width: 26px;
+    height: 26px;
+  }
+
+  .popup__title {
+    width: 238px;
+    margin: 0;
+    font-size: 18px;
+    line-height: 22px;
+    padding-bottom: 76px;
+  }
+
+  .popup__form {
+    width: 100%;
+    padding: 0;
+  }
+
+  .popup__input {
+    color: #000000;
+    padding-bottom: 9px;
+  }
+
+  .popup__button {
+    font-size: 14px;
+    line-height: 17px;
+    text-align: center;
+    max-height: 46px;
+    margin-top: 16px;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .popup__content {
+    padding: 0;
+  }
+}
