@@ -5,6 +5,8 @@ const { createUser, login } = require('./controllers/users')
 const auth = require('./middleware/auth');
 require('dotenv').config();
 
+console.log(process.env.NODE_ENV);
+
 const app = express();
 const { PORT = 3000 } = process.env;
 

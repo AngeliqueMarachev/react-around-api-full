@@ -34,6 +34,16 @@ const createCard = (req, res) => {
 const deleteCard = (req, res) => {
   const { cardId } = req.params;
 
+  Card.findById(cardId)
+    .then((card) => {
+      if (req.owner._id !== req.user._id) {
+        throw new Error('Access denied')
+      }
+    })
+    .catch((err) => {
+    if (err.name === )
+  })
+
   Card.findByIdAndRemove(cardId)
     .orFail(() => {
       const error = new Error('Card not found');
