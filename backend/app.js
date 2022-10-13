@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const { createUser, login } = require('./controllers/users')
+const auth = require('./middleware/auth');
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -19,16 +20,18 @@ app.use(express.urlencoded({ extended: true }));
 app.post('/signin', login);
 app.post('/signup', createUser);
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '631ae2f2cb10f131ef1f3f31',
-  };
+// app.use((req, res, next) => {
+//   req.user = {
+//     _id: '631ae2f2cb10f131ef1f3f31',
+//   };
 
-  next();
-});
+//   next();
+// });
 
-app.use(userRouter);
-app.use(cardRouter);
+app.use(auth);
+
+app.use(auth, userRouter);
+app.use(auth, cardRouter);
 
 app.use((req, res) => {
   res.status(PAGE_ERROR).send({ message: 'Requested resource not found' });
