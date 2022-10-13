@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const { createUser, login } = require('./controllers/users')
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -14,6 +15,9 @@ const { PAGE_ERROR } = require('./utils/constants');
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.post('/signin', login);
+app.post('/signup', createUser);
 
 app.use((req, res, next) => {
   req.user = {
