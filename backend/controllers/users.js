@@ -120,6 +120,22 @@ const login = (req, res) => {
     });
 };
 
+const getCurrentUser = (req, res) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (!user) {
+        return res.status(PAGE_ERROR).send({ message: 'User not found' });
+      }
+      return res.send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(INVALID_DATA).send({ message: 'Invalid user ID' });
+      }
+      return SERVER_ERROR(res);
+    });
+};
+
 module.exports = {
   getUsers,
   getUser,
@@ -127,4 +143,5 @@ module.exports = {
   updateUser,
   updateAvatar,
   login,
+  getCurrentUser,
 };
