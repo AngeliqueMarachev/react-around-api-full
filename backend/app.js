@@ -1,10 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const { errors } = require('celebrate');
 const helmet = require('helmet');
 const { createUser, login } = require('./controllers/users')
 const auth = require('./middleware/auth');
 const { errorHandler } = require("./middleware/errorHandler");
+const { requestLogger, errorLogger } = require('./middleware/logger');
 require('dotenv').config();
 
 console.log(process.env.NODE_ENV);
@@ -22,6 +24,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+app.use(requestLogger);
+
 app.post('/signin', login);
 app.post('/signup', createUser);
 
@@ -33,6 +37,11 @@ app.use(auth, cardRouter);
 app.use((req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
 });
+
+app.use(errorLogger);
+
+// celebrate error handler
+app.use(errors());
 
 app.use(errorHandler);
 

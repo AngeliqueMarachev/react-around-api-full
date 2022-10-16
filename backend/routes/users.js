@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const { celebrate, Joi } = require("celebrate");
+const { validateURL } = require('../middleware/linkValidation');
 
 const {
   getUsers,
@@ -56,7 +57,7 @@ router.patch(
             _id: Joi.string().alphanum().required(),
           })
           .unknown(true),
-        link: Joi.string().uri().required(),
+        link: Joi.string().required().custom(validateURL),
       })
       .unknown(true),
   }),

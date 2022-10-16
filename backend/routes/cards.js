@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
+const { validateURL } = require('../middleware/linkValidation');
 
 const {
   getCards,
@@ -8,6 +9,7 @@ const {
   likeCard,
   dislikeCard,
 } = require('../controllers/cards');
+const { custom } = require('joi');
 
 router.get('/cards', getCards);
 
@@ -17,7 +19,7 @@ router.post(
     body: Joi.object()
       .keys({
         name: Joi.string().required().min(1).max(30),
-        link: Joi.string().uri().required(),
+        link: Joi.string().required().custom(validateURL),
         user: Joi.object().keys({
           _id: Joi.string().alphanum().required(),
         }).unknown(true),
