@@ -10,15 +10,7 @@ class Api {
           }
           return res.json();
         }
-      
-        
-    getCardsList() {
-        return fetch(`${this._baseUrl}/cards`, {
-            headers: this._headers
-        }).then(res => this._checkResponse(res));
-    }
 
-    
     getUserInfo() {
         return fetch(`${this._baseUrl}/users/me`, {
             headers: this._headers
@@ -41,31 +33,6 @@ class Api {
             headers: this._headers
         }).then(res => this._checkResponse(res));
     }
-
-    addCard({ name, link }) {
-        return fetch(`${this._baseUrl}/cards`, {
-            method: 'POST',
-            headers: this._headers,
-            body: JSON.stringify({
-                name,
-                link,
-            })
-        }).then(res => this._checkResponse(res));
-    }
-
-     likeCard(cardId) {
-         return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
-             method: 'PUT',
-             headers: this._headers,
-            }).then(res => this._checkResponse(res));
-     }
-    
-     removeLike(cardId) {
-        return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
-            method: 'DELETE',
-            headers: this._headers,
-        }).then(res => this._checkResponse(res));
-    }
     
      setUserAvatar(url) {
         return fetch(`${this._baseUrl}/users/me/avatar`, {
@@ -76,6 +43,37 @@ class Api {
             }),
         }).then(res => this._checkResponse(res));
      }
+    
+     getCardsList() {
+        return fetch(`${this._baseUrl}/cards`, {
+            headers: this._headers
+        }).then(res => this._checkResponse(res));
+    }
+    
+     addCard({ name, link }) {
+        return fetch(`${this._baseUrl}/cards`, {
+            method: 'POST',
+            headers: this._headers,
+            body: JSON.stringify({
+                name,
+                link,
+            })
+        }).then(res => this._checkResponse(res));
+     }
+    
+     likeCard(cardId) {
+        return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+            method: 'PUT',
+            headers: this._headers,
+           }).then(res => this._checkResponse(res));
+    }
+   
+    removeLike(cardId) {
+       return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+           method: 'DELETE',
+           headers: this._headers,
+       }).then(res => this._checkResponse(res));
+   }
     
      deleteCard(cardId) {
         return fetch(`${this._baseUrl}/cards/${cardId}`, {
@@ -96,7 +94,7 @@ class Api {
 
 const api = new Api({
     // baseUrl: "https://around.nomoreparties.co/v1/cohort-3-en",
-    baseUrl: "http://localhost:3000",
+    baseUrl: "http://localhost:3001",
     headers: {
         authorization: '42b9ea6f-407e-4ca1-96e0-0f09ff65d270',
         // authorization: `Bearer ${localStorage.getItem('jwt')}`,
