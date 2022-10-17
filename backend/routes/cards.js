@@ -2,6 +2,7 @@ const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const { validateURL } = require('../middleware/linkValidation');
 
+
 const {
   getCards,
   createCard,
@@ -9,22 +10,34 @@ const {
   likeCard,
   dislikeCard,
 } = require('../controllers/cards');
-const { custom } = require('joi');
 
-router.get('/cards', getCards);
+const newCardValidation = Joi.object().keys({
+  name: Joi.string().required().min(2).max(30),
+  link: Joi.string().required().custom(validateURL),
+});
+
+const authValidation = Joi.object()
+  .keys({
+    authorization: Joi.string().required(),
+  })
+  .unknown(true);
+
+const cardIdValidation = Joi.object().keys({
+  cardId: Joi.string().hex().length(24),
+});
+
+router.get(
+  '/cards',
+  celebrate({
+    headers: authValidation,
+  }),
+  getCards);
 
 router.post(
   '/cards',
   celebrate({
-    body: Joi.object()
-      .keys({
-        name: Joi.string().required().min(1).max(30),
-        link: Joi.string().required().custom(validateURL),
-        user: Joi.object().keys({
-          _id: Joi.string().alphanum().required(),
-        }).unknown(true),
-      })
-      .unknown(true),
+    body: newCardValidation,
+    headers: authValidation,
   }),
   createCard,
 );
@@ -32,16 +45,8 @@ router.post(
 router.delete(
   '/cards/:cardId',
   celebrate({
-    body: Joi.object().keys({
-      user: Joi.object().keys({
-        _id: Joi.string().alphanum().required(),
-      }).unknown(true),
-    }).unknown(true),
-    params: Joi.object()
-      .keys({
-        cardId: Joi.string().alphanum().required(),
-      })
-      .unknown(true),
+    params: cardIdValidation,
+    headers: authValidation,
   }),
   deleteCard,
 );
@@ -49,16 +54,8 @@ router.delete(
 router.put(
     '/cards/:cardId/likes',
     celebrate({
-      body: Joi.object().keys({
-        user: Joi.object().keys({
-          _id: Joi.string().alphanum().required(),
-        }).unknown(true),
-      }).unknown(true),
-      params: Joi.object()
-        .keys({
-          cardId: Joi.string().alphanum().required(),
-        })
-        .unknown(true),
+      params: cardIdValidation,
+      headers: authValidation,
     }),
     likeCard,
   );
@@ -66,16 +63,8 @@ router.put(
 router.delete(
   '/cards/:cardId/likes',
   celebrate({
-    body: Joi.object().keys({
-      user: Joi.object().keys({
-        _id: Joi.string().alphanum().required(),
-      }).unknown(true),
-    }).unknown(true),
-    params: Joi.object()
-      .keys({
-        cardId: Joi.string().alphanum().required(),
-      })
-      .unknown(true),
+      params: cardIdValidation,
+      headers: authValidation,
   }),
   dislikeCard,
 );

@@ -10,21 +10,33 @@ const {
   getCurrentUser,
 } = require("../controllers/users");
 
-router.get("/users", getUsers);
-router.get("/users/:userId", getUser);
+const authValidation = Joi.object()
+  .keys({
+    authorization: Joi.string().required(),
+  })
+  .unknown(true);
+
+const userIdValidation = Joi.object().keys({
+  userId: Joi.string().hex().length(24),
+});
+
+router.get("/users",
+celebrate({
+  headers: authValidation,
+}),
+  getUsers);
+
+router.get("/users/:userId",
+celebrate({
+  params: userIdValidation,
+  headers: authValidation,
+}),
+  getUser);
 
 router.get(
   "/users/me",
   celebrate({
-    body: Joi.object()
-      .keys({
-        user: Joi.object()
-          .keys({
-            _id: Joi.string().alphanum().required(),
-          })
-          .unknown(true),
-      })
-      .unknown(true),
+    headers: authValidation,
   }),
   getCurrentUser
 );
@@ -32,17 +44,11 @@ router.get(
 router.patch(
   "/users/me",
   celebrate({
-    body: Joi.object()
-      .keys({
-        user: Joi.object()
-          .keys({
-            _id: Joi.string().alphanum().required(),
-          })
-          .unknown(true),
-        name: Joi.string().min(2).max(40),
-        about: Joi.string().min(2).max(200),
-      })
-      .unknown(true),
+    body: Joi.object().keys({
+      name: Joi.string().required().min(2).max(40),
+      about: Joi.string().required().min(2).max(200),
+    }),
+    headers: authValidation,
   }),
   updateUser
 );
@@ -50,16 +56,10 @@ router.patch(
 router.patch(
   "/users/me/avatar",
   celebrate({
-    body: Joi.object()
-      .keys({
-        user: Joi.object()
-          .keys({
-            _id: Joi.string().alphanum().required(),
-          })
-          .unknown(true),
-        link: Joi.string().required().custom(validateURL),
-      })
-      .unknown(true),
+    body: Joi.object().keys({
+      avatar: Joi.string().required().custom(validateURL),
+    }),
+    headers: authValidation,
   }),
   updateAvatar
 );

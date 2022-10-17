@@ -8,17 +8,13 @@ const handleAuthError = (res) => {
     .send({  message: "Authorization Error" });
 };
 
-const extractBearerToken = (header) => {
-  return header.replace('Bearer ', '');
-};
-
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
     return handleAuthError(res);
   }
-  const token = extractBearerToken(authorization);
+  const token = authorization.replace('Bearer ', '');
   let payload;
 
   try {

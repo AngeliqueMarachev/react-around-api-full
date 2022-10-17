@@ -1,4 +1,5 @@
-const BASE_URL = "https://register.nomoreparties.co";
+// const BASE_URL = "https://register.nomoreparties.co";
+const BASE_URL = "https//localhost:3000";
 
 const checkResponse = (res) => {
   if (!res.ok) {
@@ -35,7 +36,7 @@ export const checkToken = (token) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      authorization: `Bearer ${token}`,
     },
   }).then((res) => checkResponse(res));
 };

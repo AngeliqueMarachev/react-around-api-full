@@ -95,19 +95,13 @@ class Api {
 
 
 const api = new Api({
-    baseUrl: "https://around.nomoreparties.co/v1/cohort-3-en",
+    // baseUrl: "https://around.nomoreparties.co/v1/cohort-3-en",
+    baseUrl: "http://localhost:3000",
     headers: {
-        Authorization: '42b9ea6f-407e-4ca1-96e0-0f09ff65d270',
+        authorization: '42b9ea6f-407e-4ca1-96e0-0f09ff65d270',
+        // authorization: `Bearer ${localStorage.getItem('jwt')}`,
       "Content-Type": "application/json"
     }
 })
-
-// const api = new Api({
-//     baseUrl: "http://localhost:3001",
-//     headers: {
-//         Authorization: `Bearer ${localStorage.getItem('jwt')}`,
-//         'Content-Type': 'application/json',
-//     }
-// })
 
 export default api;
