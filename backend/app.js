@@ -8,11 +8,12 @@ const auth = require('./middleware/auth');
 const { errorHandler } = require("./middleware/errorHandler");
 const { requestLogger, errorLogger } = require('./middleware/logger');
 require('dotenv').config();
+const bcrypt = require("bcryptjs");
 
 console.log(process.env.NODE_ENV);
 
 const app = express();
-const { PORT = 3000 } = process.env;
+const { PORT = 3001 } = process.env;
 
 mongoose.connect('mongodb://localhost:27017/aroundb');
 
@@ -31,8 +32,8 @@ app.post('/signup', createUser);
 
 app.use(auth);
 
-app.use(auth, userRouter);
-app.use(auth, cardRouter);
+app.use('/', auth, userRouter);
+app.use('/', auth, cardRouter);
 
 app.use((req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });

@@ -1,6 +1,8 @@
-const bcrypt = require("bcryptjs");
+const bcrypt = require('bcryptjs');
 const User = require("../models/users");
 const jwt = require("jsonwebtoken");
+
+// const { NODE_ENV, JWT_SECRET } = process.env;
 
 const NotFoundError = require("../errors/notFoundError");
 const BadRequestError = require("../errors/badRequest");
@@ -50,6 +52,7 @@ const createUser = (req, res, next) => {
         throw new BadRequestError("Bad request");
       }
       res.status(200).send({ message: "User created successfully" });
+      //send({ data: { name: user.name, email: user.email, about: user.about, avatar: user.avatar },
     })
     .catch(next);
 };
@@ -107,16 +110,18 @@ const login = (req, res, next) => {
       );
       res.status(200).send(token);
     })
-    .catch(next);
+    .catch((err) => {
+      res.status(401).send({ message: err.message });
+    });
 };
 
-const getCurrentUser = (req, res) => {
+const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
         throw new BadRequestError("Bad request");
       }
-      return res.send(200).send(user);
+      return res.send(200).send({ data: user })
     })
     .catch(next);
 };
@@ -124,6 +129,7 @@ const getCurrentUser = (req, res) => {
 module.exports = {
   getUsers,
   getUser,
+  getCurrentUser,
   createUser,
   updateUser,
   updateAvatar,
