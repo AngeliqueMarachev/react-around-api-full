@@ -11,7 +11,7 @@ class Api {
           return res.json();
         }
       
-
+        
     getCardsList() {
         return fetch(`${this._baseUrl}/cards`, {
             headers: this._headers
@@ -101,5 +101,13 @@ const api = new Api({
       "Content-Type": "application/json"
     }
 })
+
+// const api = new Api({
+//     baseUrl: "http://localhost:3001",
+//     headers: {
+//         Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+//         'Content-Type': 'application/json',
+//     }
+// })
 
 export default api;

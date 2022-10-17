@@ -8,7 +8,6 @@ const auth = require('./middleware/auth');
 const { errorHandler } = require("./middleware/errorHandler");
 const { requestLogger, errorLogger } = require('./middleware/logger');
 require('dotenv').config();
-const bcrypt = require("bcryptjs");
 
 console.log(process.env.NODE_ENV);
 
