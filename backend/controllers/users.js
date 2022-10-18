@@ -2,8 +2,6 @@ const bcrypt = require('bcryptjs');
 const User = require("../models/users");
 const jwt = require("jsonwebtoken");
 
-// const { NODE_ENV, JWT_SECRET } = process.env;
-
 const NotFoundError = require("../errors/notFoundError");
 const BadRequestError = require("../errors/badRequest");
 
@@ -39,22 +37,22 @@ const getUser = (req, res, next) => {
 
 const createUser = (req, res, next) => {
   const { email, password } = req.body;
-  bcrypt
-    .hash(password, 10)
-    .then((password) =>
-      User.create({
-        email,
-        password,
-      })
-    )
+  User.findOne({ email })
     .then((user) => {
-      if (!user) {
-        throw new BadRequestError("Bad request");
+      if (user) {
+        throw new BadRequestError('The user with the provided email already exists');
+      } else {
+        return bcrypt.hash(password, 10);
       }
-      res.status(200).send({ message: "User created successfully" });
-      //send({ data: { name: user.name, email: user.email, about: user.about, avatar: user.avatar },
     })
-    .catch(next);
+    .then((hash) => User.create({
+      email,
+      password: hash,
+    }))
+    .then((data) => res.status(201).send(data))
+    .catch(() => {
+      console.log('error here');
+    });
 };
 
 const updateUserData = (req, res) => {
@@ -91,27 +89,19 @@ const updateAvatar = (req, res) => {
   return updateUserData(req, res);
 };
 
-const login = (req, res, next) => {
-  const { email, password } = req.body;
+const { JWT_SECRET } = process.env;
 
-  return User.findUserByCredentials(email, password, {
-    new: true,
-    runValidators: true,
-  })
+const login = (req, res) => {
+  const { email, password } = req.body;
+  return User.findUserByCredentials(email, password)
     .then((user) => {
-      if (!user) {
-        throw new BadRequestError("Bad request");
-      }
-      const { NODE_ENV, JWT_SECRET } = process.env;
-      const token = jwt.sign(
-        { _id: user._id },
-        NODE_ENV === "production" ? JWT_SECRET : "dev-secret,",
-        { expiresIn: "7d" }
-      );
-      res.status(200).send(token);
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: '7d',
+      });
+      res.send({ data: user.toJSON(), token });
     })
-    .catch((err) => {
-      res.status(401).send({ message: err.message });
+    .catch(() => {
+      res.status(401).send('!login');
     });
 };
 

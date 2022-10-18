@@ -36,26 +36,51 @@ function App() {
 
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [email, setEmail] = React.useState("");
+  const [token, setToken] = React.useState(localStorage.getItem("jwt"));
 
   const [isSuccess, setIsSuccess] = React.useState(true);
 
   const history = useHistory();
 
+  // React.useEffect(() => {
+  //   isLoggedIn &&
+  //     api
+  //       .getUserInfo()
+  //       .then((res) => {
+  //         setCurrentUser(res);
+  //       })
+  //       .catch(() => console.log("something went wrong"));
+  //   api
+  //     .getCardsList()
+  //     .then((data) => {
+  //       setCards(data);
+  //     })
+  //     .catch(() => console.log("something went wrong"));
+  // }, [isLoggedIn]);
+
   React.useEffect(() => {
-    isLoggedIn &&
+    if (token) {
+      isLoggedIn &&
       api
-        .getUserInfo()
-        .then((res) => {
-          setCurrentUser(res);
+        .getUserInfo(token)
+        .then(user => {
+          setCurrentUser(user);
         })
-        .catch(() => console.log("something went wrong"));
-    api
-      .getCardsList()
-      .then((data) => {
-        setCards(data);
-      })
-      .catch(() => console.log("something went wrong"));
-  }, [isLoggedIn]);
+        .catch(console.log('error userInfo'));
+    }
+  }, [token, isLoggedIn]);
+
+  React.useEffect(() => {
+    if (token) {
+      isLoggedIn &&
+      api
+        .getInitialCards(token)
+        .then(res => {
+          setCards(res);
+        })
+        .catch(console.log('error card load'));
+    }
+  }, [token, isLoggedIn]);
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -152,9 +177,10 @@ function App() {
   function handleLogin({ email, password }) {
     auth
       .login({ email, password })
-      .then((data) => {
-        if (data.token) {
-          localStorage.setItem("jwt", data.token);
+      .then((res) => {
+        if (res.token) {
+          localStorage.setItem("jwt", res.token);
+          setToken(res.token)
           setIsLoggedIn(true);
           history.push("/");
         }
@@ -165,24 +191,48 @@ function App() {
       });
   }
 
+  // function onRegister({ email, password }) {
+  //   auth
+  //     .register(email, password)
+  //     .then((res) => {
+  //       setIsInfoTooltipOpen(true);
+  //       if (res.data._id) {
+  //         setIsSuccess("success");
+  //         setTimeout(() => {
+  //           history.push("/signin");
+  //           setIsInfoTooltipOpen(false);
+  //         }, 3000);
+  //       } else {
+  //         setIsSuccess("fail");
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       setIsSuccess("fail");
+  //       setIsInfoTooltipOpen(true);
+  //     });
+  // }
+
+  
   function onRegister({ email, password }) {
     auth
       .register(email, password)
       .then((res) => {
+        console.log('here');
+        if (res) {
+          console.log(res);
+        setIsSuccess("success");
         setIsInfoTooltipOpen(true);
-        if (res.data._id) {
-          setIsSuccess("success");
-          setTimeout(() => {
-            history.push("/signin");
-            setIsInfoTooltipOpen(false);
-          }, 3000);
-        } else {
+        console.log('registered')
+          history.push("/signin");
+        }
+           else {
           setIsSuccess("fail");
         }
       })
       .catch((err) => {
         setIsSuccess("fail");
         setIsInfoTooltipOpen(true);
+        console.log('!onregister')
       });
   }
 
@@ -190,9 +240,10 @@ function App() {
     auth
       .login(email, password)
       .then((res) => {
-        if (res.token) {
+        if (res) {
           setIsLoggedIn(true);
           setEmail(email);
+          console.log('loggedIn');
           localStorage.setItem("jwt", res.token);
           history.push("/");
         } else {
@@ -216,7 +267,7 @@ function App() {
       auth
         .checkToken(token)
         .then((res) => {
-          if (res) {
+          if (res._id) {
             setEmail(res.data.email);
             setIsLoggedIn(true);
             history.push("/");
@@ -224,7 +275,7 @@ function App() {
             localStorage.removeItem("jwt");
           }
         })
-        .catch((err) => console.log(err));
+        .catch(() => console.log('problem check token'));
     }
   }, [history]);
 

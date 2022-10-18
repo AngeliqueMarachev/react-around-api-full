@@ -50,7 +50,7 @@ const Register = ({ onRegister }) => {
                         Sign up
                     </button>
                     <p className='auth-form__text'>
-                        Already a memeber? {' '}
+                        Already a member? {' '}
                         <Link className='auth-form__link' to='/signin'>
                             Log in here!
                         </Link>
