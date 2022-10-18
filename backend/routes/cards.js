@@ -2,7 +2,6 @@ const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const { validateURL } = require('../middleware/linkValidation');
 
-
 const {
   getCards,
   createCard,

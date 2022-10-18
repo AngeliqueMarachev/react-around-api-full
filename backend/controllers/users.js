@@ -1,4 +1,4 @@
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs'); // for hashing password
 const User = require("../models/users");
 const jwt = require("jsonwebtoken");
 
@@ -35,7 +35,7 @@ const getUser = (req, res, next) => {
     .catch(next);
 };
 
-const createUser = (req, res, next) => {
+const createUser = (req, res, next) => { // set up a user in database by making server request
   const { email, password } = req.body;
   User.findOne({ email })
     .then((user) => {
@@ -53,7 +53,7 @@ const createUser = (req, res, next) => {
     .catch(() => {
       console.log('error here');
     });
-};
+}; //  CreateUser gets passed to OnRegister in App.js
 
 const updateUserData = (req, res) => {
   const id = req.user._id;
@@ -98,10 +98,10 @@ const login = (req, res) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: '7d',
       });
-      res.send({ data: user.toJSON(), token });
+      res.send({ data: user.JSON(), token }); // HERE?
     })
     .catch(() => {
-      res.status(401).send('!login');
+      res.status(401).send('!login'); // If the user from userSchema isn't found, catch is triggered
     });
 };
 

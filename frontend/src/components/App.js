@@ -217,7 +217,7 @@ function App() {
     auth
       .register(email, password)
       .then((res) => {
-        console.log('here');
+        // console.log('here');
         if (res) {
           console.log(res);
         setIsSuccess("success");

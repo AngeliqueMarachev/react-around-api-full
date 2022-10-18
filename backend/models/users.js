@@ -28,6 +28,8 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    // unique: true,
+    // ensures multiple users with the same e-mail won't end up in the database
     validate: {
       validator(value) {
         return validator.isEmail(value);
@@ -38,6 +40,7 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+    // unique: true,
     select: false,
     validate: {
       validator(value) {
@@ -49,21 +52,22 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
-  return this.findOne({ email })
+  return this.findOne({ email }) //  see if a user is in the database
     .select('+password')
     .then((user) => {
       if (!user) {
         return Promise.reject(new Error('Incorrect email or password'));
       }
-      return bcrypt.compare(password, user.password)
+      return bcrypt.compare(password, user.password) // compare the hash result with the hash in the database
         .then((matched) => {
           if (!matched) {
             return Promise.reject(new Error('Incorrect email or password'));
           }
 
-          return user;
+          return user; // If passwords match, return a successful response containing JSON.
         });
     });
 };
 
 module.exports = mongoose.model('user', userSchema);
+
