@@ -61,24 +61,26 @@ function App() {
   React.useEffect(() => {
     if (token) {
       isLoggedIn &&
-      api
-        .getUserInfo(token)
-        .then(user => {
-          setCurrentUser(user);
-        })
-        .catch(console.log('error userInfo'));
+        api
+          .getUserInfo(token)
+          .then((user) => {
+            setCurrentUser(user);
+          })
+          .catch(console.log("error userInfo"));
     }
   }, [token, isLoggedIn]);
 
   React.useEffect(() => {
     if (token) {
       isLoggedIn &&
-      api
-        .getInitialCards(token)
-        .then(res => {
-          setCards(res);
-        })
-        .catch(console.log('error card load'));
+        api
+          .getCardsList(token)
+          .then((res) => {
+            console.log(res);
+
+            setCards(res.data);
+          })
+          .catch(console.log("error card load"));
     }
   }, [token, isLoggedIn]);
 
@@ -174,23 +176,6 @@ function App() {
       });
   }
 
-  function handleLogin({ email, password }) {
-    auth
-      .login({ email, password })
-      .then((res) => {
-        if (res.token) {
-          localStorage.setItem("jwt", res.token);
-          setToken(res.token)
-          setIsLoggedIn(true);
-          history.push("/");
-        }
-      })
-      .catch(() => console.log("something went wrong"))
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }
-
   // function onRegister({ email, password }) {
   //   auth
   //     .register(email, password)
@@ -212,7 +197,6 @@ function App() {
   //     });
   // }
 
-  
   function onRegister({ email, password }) {
     auth
       .register(email, password)
@@ -220,19 +204,19 @@ function App() {
         // console.log('here');
         if (res) {
           console.log(res);
-        setIsSuccess("success");
-        setIsInfoTooltipOpen(true);
-        console.log('registered')
+          setIsSuccess("success");
+          setIsInfoTooltipOpen(true);
+          console.log("registered");
           history.push("/signin");
-        }
-           else {
+        } else {
           setIsSuccess("fail");
         }
       })
       .catch((err) => {
+        console.log(err);
         setIsSuccess("fail");
         setIsInfoTooltipOpen(true);
-        console.log('!onregister')
+        console.log("!onregister");
       });
   }
 
@@ -243,7 +227,8 @@ function App() {
         if (res) {
           setIsLoggedIn(true);
           setEmail(email);
-          console.log('loggedIn');
+          console.log(res.user);
+          setCurrentUser(res.user);
           localStorage.setItem("jwt", res.token);
           history.push("/");
         } else {
@@ -275,7 +260,7 @@ function App() {
             localStorage.removeItem("jwt");
           }
         })
-        .catch(() => console.log('problem check token'));
+        .catch(() => console.log("problem check token"));
     }
   }, [history]);
 
@@ -337,7 +322,6 @@ function App() {
               onEditProfileClick={handleEditProfileClick}
               onAddPlaceClick={handleAddPlaceClick}
               onCardClick={handleCardClick}
-              onLogin={handleLogin}
               cards={cards}
             />
 
