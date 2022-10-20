@@ -6,15 +6,15 @@ export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
 
   const isOwn = card.owner._id === currentUser._id;
 
-  const cardDeleteButtonClassName = `gallery__delete-button ${
-    isOwn ? "gallery__delete-button_visible" : "gallery__delete-button_hidden"
-  }`;
-
   const isLiked = card.likes.some((user) => user._id === currentUser._id);
 
-  const cardLikeButtonClassName = `gallery__heart-icon ${
+  const cardLikeButton = `gallery__heart-icon ${
     isLiked && "gallery__heart-icon_clicked"
-  }`;
+    }`;
+  
+    const cardDeleteButton = `gallery__delete-button ${
+      isOwn ? "gallery__delete-button_visible" : "gallery__delete-button_hidden"
+    }`;
 
   function handleClick() {
     onCardClick(card);
@@ -38,7 +38,7 @@ export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
       />
       <button
         type="button"
-        className={cardDeleteButtonClassName}
+        className={cardDeleteButton}
         onClick={handleDeleteClick}
       ></button>
 
@@ -47,7 +47,7 @@ export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
         <div className="gallery__likes-container">
           <button
             type="button"
-            className={cardLikeButtonClassName}
+            className={cardLikeButton}
             onClick={handleLikeClick}
           ></button>
           <div className="gallery__likes">{card.likes.length}</div>

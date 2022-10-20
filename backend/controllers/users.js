@@ -16,23 +16,31 @@ const getUsers = (req, res, next) => {
         .catch(next);
 };
 
-const getUser = (req, res, next) => {
-    const { userId } = req.params;
-    User.findById(userId)
+// const getUser = (req, res, next) => {
+//     const { userId } = req.params;
+//     User.findById(userId)
 
-        .then((selectedUser) => {
-            if (!selectedUser) {
-                throw new NotFoundError('No user with matching ID');
-            }
-            return res.status(200).send(selectedUser);
-        })
-        .catch((err) => {
-            if (err.name === 'CastError') {
-                throw new BadRequestError('Bad request');
-            }
-            next(err);
-        })
-        .catch(next);
+//         .then((selectedUser) => {
+//             if (!selectedUser) {
+//                 throw new NotFoundError('No user with matching ID');
+//             }
+//             return res.status(200).send(selectedUser);
+//         })
+//         .catch((err) => {
+//             if (err.name === 'CastError') {
+//                 throw new BadRequestError('Bad request');
+//             }
+//             next(err);
+//         })
+//         .catch(next);
+// };
+
+const getUser = (req, res, next) => {
+  const { userId } = req.params;
+  User.findById(userId)
+    .orFail(() => {throw new NotFoundError("No user with matching ID")})
+    .then((selectedUser) => res.status(200).send(selectedUser))
+    .catch(next);
 };
 
 const createUser = (req, res, next) => {
@@ -106,7 +114,7 @@ const login = (req, res) => {
             res.send({ user, token }); // HERE?
         })
         .catch((err) => {
-            console.log(err);
+            // console.log(err);
             res.status(401).send(err); // If the user from userSchema isn't found, catch is triggered
         });
 };

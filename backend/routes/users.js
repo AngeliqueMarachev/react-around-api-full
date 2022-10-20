@@ -28,6 +28,15 @@ router.post('/signin', login);
 router.post('/signup', createUser);
 
 router.get(
+  '/users/me',
+  celebrate({
+      headers: authValidation,
+  }),
+  auth,
+  getCurrentUser,
+);
+
+router.get(
     '/users',
     celebrate({
         headers: authValidation,
@@ -37,22 +46,13 @@ router.get(
 );
 
 router.get(
-    '/users/:userId',
-    celebrate({
-        params: userIdValidation,
-        headers: authValidation,
-    }),
-    auth,
-    getUser,
-);
-
-router.get(
-    '/users/me',
-    celebrate({
-        headers: authValidation,
-    }),
-    auth,
-    getCurrentUser,
+  '/users/:userId',
+  celebrate({
+      params: userIdValidation,
+      headers: authValidation,
+  }),
+  auth,
+  getUser,
 );
 
 router.patch(

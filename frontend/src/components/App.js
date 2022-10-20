@@ -43,46 +43,54 @@ function App() {
   const history = useHistory();
 
   // React.useEffect(() => {
-  //   isLoggedIn &&
-  //     api
-  //       .getUserInfo()
-  //       .then((res) => {
-  //         setCurrentUser(res);
-  //       })
-  //       .catch(() => console.log("something went wrong"));
-  //   api
-  //     .getCardsList()
-  //     .then((data) => {
-  //       setCards(data);
-  //     })
-  //     .catch(() => console.log("something went wrong"));
-  // }, [isLoggedIn]);
+  //   if (token) {
+  //     isLoggedIn &&
+  //       api
+  //         .getUserInfo(token)
+  //         .then((user) => {
+  //           setCurrentUser(user);
+  //         })
+  //         .catch((err) => console.log(err))
+  //   }
+  // }, [token, isLoggedIn]);
 
   React.useEffect(() => {
-    if (token) {
-      isLoggedIn &&
+    if (isLoggedIn) {
         api
-          .getUserInfo(token)
+          .getUserInfo()
           .then((user) => {
             setCurrentUser(user);
           })
-          .catch(console.log("error userInfo"));
+          .catch((err) => console.log(err))
     }
-  }, [token, isLoggedIn]);
+  }, [isLoggedIn]);
 
-  React.useEffect(() => {
-    if (token) {
-      isLoggedIn &&
-        api
-          .getCardsList(token)
-          .then((res) => {
-            console.log(res);
+  // React.useEffect(() => {
+  //   if (token) {
+  //     isLoggedIn &&
+  //       api
+  //         .getCardsList(token)
+  //         .then((res) => {
+  //           console.log(res);
 
-            setCards(res.data);
-          })
-          .catch(console.log("error card load"));
-    }
-  }, [token, isLoggedIn]);
+  //           setCards(res.data);
+  //         })
+  //         .catch((err) => console.log(err))
+  //   }
+  // }, [token, isLoggedIn]);
+
+   React.useEffect(() => {
+      if (isLoggedIn) {
+          api
+            .getCardsList()
+            .then((res) => {
+              console.log(res);
+  
+              setCards(res.data);
+            })
+            .catch((err) => console.log(err))
+      }
+    }, [isLoggedIn]);
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -205,9 +213,11 @@ function App() {
         if (res) {
           console.log(res);
           setIsSuccess("success");
-          setIsInfoTooltipOpen(true);
-          console.log("registered");
-          history.push("/signin");
+          setTimeout(() => {
+            setIsInfoTooltipOpen(true);
+            // console.log("registered");
+            history.push("/signin");
+          }, 3000);
         } else {
           setIsSuccess("fail");
         }
@@ -229,15 +239,16 @@ function App() {
           setEmail(email);
           console.log(res.user);
           setCurrentUser(res.user);
+          setToken(res.token);
           localStorage.setItem("jwt", res.token);
           history.push("/");
         } else {
           setIsSuccess("fail");
           setIsInfoTooltipOpen(true);
-          setTimeout(() => {
+          // setTimeout(() => {
             history.push("/signup");
             setIsInfoTooltipOpen(false);
-          }, 3000);
+          // }, 3000);
         }
       })
       .catch((err) => {
@@ -260,7 +271,7 @@ function App() {
             localStorage.removeItem("jwt");
           }
         })
-        .catch(() => console.log("problem check token"));
+        .catch((err) => console.log(err));
     }
   }, [history]);
 

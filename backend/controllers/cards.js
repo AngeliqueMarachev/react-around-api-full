@@ -5,9 +5,8 @@ const BadRequestError = require('../errors/badRequest');
 
 // GET
 const getCards = (req, res, next) => {
-    const owner = req.user._id;
 
-    Card.find({ owner })
+    Card.find({ })
         .then((cards) => {
             if (!cards) {
                 throw new NotFoundError('Nothing to display');
@@ -19,13 +18,12 @@ const getCards = (req, res, next) => {
 
 // POST
 const createCard = (req, res, next) => {
-    const { name, link, likes } = req.body;
+    const { name, link } = req.body;
     const owner = req.user._id;
 
     Card.create({
         name,
         link,
-        likes,
         owner,
     })
         .then((card) => {
