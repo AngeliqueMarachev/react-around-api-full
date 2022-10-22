@@ -240,7 +240,7 @@ function App() {
         if (res) {
           setIsLoggedIn(true);
           setEmail(email);
-          console.log(res.user);
+          // console.log(res.user);
           setCurrentUser(res.user);
           setToken(res.token);
           localStorage.setItem("jwt", res.token);
@@ -267,14 +267,18 @@ function App() {
         .checkToken(token)
         .then((res) => {
           if (res._id) {
-            setEmail(res.data.email);
+            setEmail(res.email);
             setIsLoggedIn(true);
             history.push("/");
           } else {
+            setIsLoggedIn(false);
+            history.push("/signin");
             localStorage.removeItem("jwt");
           }
         })
         .catch((err) => console.log(err));
+    } else {
+      history.push("/signin");
     }
   }, [history]);
 
@@ -376,9 +380,9 @@ function App() {
             <Login onRegister={onLogin} />
           </Route>
 
-          <Route path="/signup" loggedIn={isLoggedIn}>
+          {/* <Route path="/signup" loggedIn={isLoggedIn}>
             <Register onRegister={onRegister} />
-          </Route>
+          </Route> */}
 
           <Route>
             {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
