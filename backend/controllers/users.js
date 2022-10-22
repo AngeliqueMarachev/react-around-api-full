@@ -13,7 +13,10 @@ const getUsers = (req, res, next) => {
             }
             return res.status(200).send({ data: users });
         })
-        .catch(next);
+        .catch((err) => {
+          console.log(err);
+          next(err);
+        });
 };
 
 // const getUser = (req, res, next) => {
@@ -40,7 +43,10 @@ const getUser = (req, res, next) => {
   User.findById(userId)
     .orFail(() => {throw new NotFoundError("No user with matching ID")})
     .then((selectedUser) => res.status(200).send(selectedUser))
-    .catch(next);
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
 };
 
 const createUser = (req, res, next) => {
@@ -64,11 +70,12 @@ const createUser = (req, res, next) => {
         )
         .then((data) => res.status(201).send(data))
         .catch((err) => {
-            console.log('error here', err);
+          console.log(err);
+          // next(err);
         });
 }; //  CreateUser gets passed to OnRegister in App.js
 
-const updateUserData = (req, res) => {
+const updateUserData = (req, res, next) => {
     const id = req.user._id;
     const { body } = req;
 
@@ -77,11 +84,12 @@ const updateUserData = (req, res) => {
             if (!updatedUser) {
                 throw new NotFoundError('No user with ID found');
             }
-            res.status(200).send({
-                message: `User ${updatedUser} updated successfully`,
-            });
+            res.status(200).send(updatedUser);
         })
-        .catch(next);
+        .catch((err) => {
+          console.log(err);
+          next(err);
+        });
 };
 
 const updateUser = (req, res) => {
@@ -103,6 +111,7 @@ const updateAvatar = (req, res) => {
 };
 
 const { JWT_SECRET } = process.env;
+// console.log(JWT_SECRET)
 
 const login = (req, res) => {
     const { email, password } = req.body;
@@ -114,7 +123,7 @@ const login = (req, res) => {
             res.send({ user, token }); // HERE?
         })
         .catch((err) => {
-            // console.log(err);
+            console.log(err);
             res.status(401).send(err); // If the user from userSchema isn't found, catch is triggered
         });
 };
@@ -125,9 +134,13 @@ const getCurrentUser = (req, res, next) => {
             if (!user) {
                 throw new BadRequestError('Bad request');
             }
-            return res.send(200).send({ data: user });
+          return res.status(200).send(user);
+          // return res.status(200).send({ data: user });
         })
-        .catch(next);
+        .catch((err) => {
+          console.log(err);
+          next(err);
+        });
 };
 
 module.exports = {

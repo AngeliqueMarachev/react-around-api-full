@@ -78,19 +78,19 @@ class Api {
       }),
     }).then((res) => this._checkResponse(res));
   }
-
+  
   likeCard(cardId) {
-    return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: "PUT",
       headers: {
         ...this._headers,
-        authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        // authorization: `Bearer ${localStorage.getItem("jwt")}`,
       }
     }).then((res) => this._checkResponse(res));
   }
 
   removeLike(cardId) {
-    return fetch(`${this._baseUrl}/cards/likes/${cardId}`, {
+    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: "DELETE",
       headers: {
         ...this._headers,
@@ -100,7 +100,7 @@ class Api {
   }
 
   deleteCard(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}`, {
+    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: "DELETE",
       headers: {
         ...this._headers,

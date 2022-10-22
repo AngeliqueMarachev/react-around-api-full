@@ -48,7 +48,7 @@ router.get(
 router.get(
   '/users/:userId',
   celebrate({
-      params: userIdValidation,
+      // params: userIdValidation,
       headers: authValidation,
   }),
   auth,

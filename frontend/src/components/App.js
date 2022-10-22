@@ -59,6 +59,7 @@ function App() {
         api
           .getUserInfo()
           .then((user) => {
+            // console.log('line 61, getUserInfo', user)
             setCurrentUser(user);
           })
           .catch((err) => console.log(err))
@@ -84,8 +85,7 @@ function App() {
           api
             .getCardsList()
             .then((res) => {
-              console.log(res);
-  
+              // console.log(res);
               setCards(res.data);
             })
             .catch((err) => console.log(err))
@@ -112,13 +112,13 @@ function App() {
     // Check one more time if this card was already liked
     const isLiked = card.likes.some((user) => user._id === currentUser._id);
 
-    // Send a request to the API and getting the updated card data
+    // Send a request to the API and get the updated card data
     api
-      .changeLikeCardStatus(card._id, !isLiked)
+      .changeLikeCardStatus(card._id, isLiked)
       .then((newCard) => {
         setCards((state) =>
           state.map((currentCard) =>
-            currentCard._id === card._id ? newCard : currentCard
+            currentCard._id === card._id ? newCard.data : currentCard
           )
         );
       })
@@ -158,6 +158,7 @@ function App() {
     api
       .setUserAvatar(avatar)
       .then((res) => {
+        console.log(res);
         setCurrentUser({
           ...currentUser,
           avatar: res.avatar,
