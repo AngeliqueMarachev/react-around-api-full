@@ -56,13 +56,13 @@ function App() {
 
   React.useEffect(() => {
     if (isLoggedIn) {
-        api
-          .getUserInfo()
-          .then((user) => {
-            // console.log('line 61, getUserInfo', user)
-            setCurrentUser(user);
-          })
-          .catch((err) => console.log(err))
+      api
+        .getUserInfo()
+        .then((user) => {
+          // console.log('line 61, getUserInfo', user)
+          setCurrentUser(user);
+        })
+        .catch((err) => console.log(err));
     }
   }, [isLoggedIn]);
 
@@ -80,17 +80,17 @@ function App() {
   //   }
   // }, [token, isLoggedIn]);
 
-   React.useEffect(() => {
-      if (isLoggedIn) {
-          api
-            .getCardsList()
-            .then((res) => {
-              // console.log(res);
-              setCards(res.data);
-            })
-            .catch((err) => console.log(err))
-      }
-    }, [isLoggedIn]);
+  React.useEffect(() => {
+    if (isLoggedIn) {
+      api
+        .getCardsList()
+        .then((res) => {
+          // console.log(res);
+          setCards(res.data);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [isLoggedIn]);
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -109,20 +109,21 @@ function App() {
   }
 
   function handleCardLike(card) {
-    // Check one more time if this card was already liked
-    const isLiked = card.likes.some((user) => user._id === currentUser._id);
-
-    // Send a request to the API and get the updated card data
+    const isLiked = card.likes.some((user) => {
+      // console.log(currentUser);
+      return user === currentUser._id;
+    });
     api
-      .changeLikeCardStatus(card._id, isLiked)
+      .changeLikeCardStatus(currentUser._id, isLiked)
+      
       .then((newCard) => {
         setCards((state) =>
           state.map((currentCard) =>
-            currentCard._id === card._id ? newCard.data : currentCard
+            currentCard._id === currentUser._id ? newCard : currentCard
           )
         );
       })
-      .catch(() => console.log("something went wrong"));
+      .catch((err) => console.log("something went wrong", err));
   }
 
   function handleCardDelete(card) {
@@ -177,7 +178,7 @@ function App() {
     api
       .addCard(name, url)
       .then((res) => {
-        console.log('line180', res);
+        console.log("line180", res);
         setCards([res.data, ...cards]);
         closeAllPopups();
       })
@@ -249,12 +250,13 @@ function App() {
           setIsSuccess("fail");
           setIsInfoTooltipOpen(true);
           // setTimeout(() => {
-            history.push("/signup");
-            setIsInfoTooltipOpen(false);
+          history.push("/signup");
+          setIsInfoTooltipOpen(false);
           // }, 3000);
         }
       })
       .catch((err) => {
+        console.log(err);
         setIsSuccess("fail");
         setIsInfoTooltipOpen(true);
       });
@@ -380,9 +382,9 @@ function App() {
             <Login onRegister={onLogin} />
           </Route>
 
-          {/* <Route path="/signup" loggedIn={isLoggedIn}>
+          <Route path="/signup" loggedIn={isLoggedIn}>
             <Register onRegister={onRegister} />
-          </Route> */}
+          </Route>
 
           <Route>
             {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}

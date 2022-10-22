@@ -11,6 +11,15 @@ class Api {
     return res.json();
   }
 
+  getCardsList() {
+    return fetch(`${this._baseUrl}/cards`, {
+      headers: {
+        ...this._headers,
+        authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      }
+    }).then((res) => this._checkResponse(res));
+  }
+
   getUserInfo() {
     return fetch(`${this._baseUrl}/users/me`, {
       headers: {
@@ -36,28 +45,6 @@ class Api {
 
   getProfile() {
     return fetch(`${this._baseUrl}/users/me`, {
-      headers: {
-        ...this._headers,
-        authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      }
-    }).then((res) => this._checkResponse(res));
-  }
-
-  setUserAvatar(url) {
-    return fetch(`${this._baseUrl}/users/me/avatar`, {
-      method: "PATCH",
-      headers: {
-        ...this._headers,
-        authorization: `Bearer ${localStorage.getItem("jwt")}`,
-      },
-      body: JSON.stringify({
-        avatar: url,
-      }),
-    }).then((res) => this._checkResponse(res));
-  }
-
-  getCardsList() {
-    return fetch(`${this._baseUrl}/cards`, {
       headers: {
         ...this._headers,
         authorization: `Bearer ${localStorage.getItem("jwt")}`,
@@ -94,13 +81,26 @@ class Api {
       method: "DELETE",
       headers: {
         ...this._headers,
-        authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        // authorization: `Bearer ${localStorage.getItem("jwt")}`,
       }
     }).then((res) => this._checkResponse(res));
   }
 
+  setUserAvatar(url) {
+    return fetch(`${this._baseUrl}/users/me/avatar`, {
+      method: "PATCH",
+      headers: {
+        ...this._headers,
+        authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
+      body: JSON.stringify({
+        avatar: url,
+      }),
+    }).then((res) => this._checkResponse(res));
+  }
+
   deleteCard(cardId) {
-    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
+    return fetch(`${this._baseUrl}/cards/${cardId}`, {
       method: "DELETE",
       headers: {
         ...this._headers,
@@ -113,7 +113,7 @@ class Api {
     const method = !isLiked ? "DELETE" : "PUT";
     return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: method,
-        headers: {
+      headers: {
         ...this._headers,
         authorization: `Bearer ${localStorage.getItem("jwt")}`,
       }

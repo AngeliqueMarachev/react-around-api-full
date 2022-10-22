@@ -5,7 +5,8 @@ const ProtectedRoute = ({ children, loggedIn, ...props }) => {
     const token = localStorage.getItem('jwt');
     return (
         <Route {...props} >
-            {token || loggedIn ? children : <Redirect to={'/signin'} />}
+            {/* {token || loggedIn ? children : <Redirect to={'/signin'} />} */}
+            {loggedIn ? children : <Redirect to={'/signin'} />}
         </Route>
     );
 }

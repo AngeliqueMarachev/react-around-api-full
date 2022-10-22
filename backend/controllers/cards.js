@@ -3,19 +3,6 @@ const Card = require("../models/cards");
 const NotFoundError = require("../errors/notFoundError");
 const BadRequestError = require("../errors/badRequest");
 
-// GET
-// const getCards = (req, res, next) => {
-
-//     Card.find({ })
-//         .then((cards) => {
-//             if (!cards) {
-//                 throw new NotFoundError('Nothing to display');
-//             }
-//             res.status(200).send({ data: cards });
-//         })
-//         .catch(next);
-// };
-
 const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => {
@@ -43,10 +30,6 @@ const createCard = (req, res, next) => {
       }
       res.status(201).send({ data: card });
     })
-    .catch((err) => {
-      console.log(err);
-      next(err);
-    });
 };
 
 // DELETE
@@ -77,11 +60,8 @@ const deleteCard = (req, res, next) => {
       }
       next(err);
     })
-    .catch((err) => {
-      console.log(err);
-      next(err);
-    });
 };
+
 
 const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
@@ -94,18 +74,15 @@ const likeCard = (req, res, next) => {
       if (!card) {
         throw new NotFoundError("No card with matching ID");
       }
-      res.status(200).send(card.likes);
+      res.status(200).send(newCard);
     })
     .catch((err) => {
+      console.log(err);
       if (err.name === "CastError") {
         throw new BadRequestError("Bad request");
       }
       next(err);
     })
-    .catch((err) => {
-      console.log(err);
-      next(err);
-    });
 };
 
 const dislikeCard = (req, res, next) => {
@@ -116,20 +93,17 @@ const dislikeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        return next(NotFoundError("No card with matching ID"));
+        return new(NotFoundError("No card with matching ID"));
       }
       res.status(200).send(card.likes);
     })
     .catch((err) => {
+      console.log(err);
       if (err.name === "CastError") {
         throw new BadRequestError("Bad request");
       }
       next(err);
     })
-    .catch((err) => {
-      console.log(err);
-      next(err);
-    });
 };
 
 module.exports = {
