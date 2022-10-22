@@ -155,6 +155,7 @@ function App() {
 
   function handleUpdateAvatar({ avatar }) {
     setIsLoading(true);
+    console.log(avatar);
     api
       .setUserAvatar(avatar)
       .then((res) => {
@@ -176,7 +177,8 @@ function App() {
     api
       .addCard(name, url)
       .then((res) => {
-        setCards([res, ...cards]);
+        console.log('line180', res);
+        setCards([res.data, ...cards]);
         closeAllPopups();
       })
       .catch(() => console.log("something went wrong"))
