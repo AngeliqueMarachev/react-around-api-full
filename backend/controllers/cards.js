@@ -62,7 +62,6 @@ const deleteCard = (req, res, next) => {
     })
 };
 
-
 const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
@@ -74,7 +73,7 @@ const likeCard = (req, res, next) => {
       if (!card) {
         throw new NotFoundError("No card with matching ID");
       }
-      res.status(200).send(newCard);
+      res.status(200).send(card);
     })
     .catch((err) => {
       console.log(err);
@@ -93,9 +92,10 @@ const dislikeCard = (req, res, next) => {
   )
     .then((card) => {
       if (!card) {
-        return new(NotFoundError("No card with matching ID"));
+
+        throw new NotFoundError("No card with matching ID");
       }
-      res.status(200).send(card.likes);
+      res.status(200).send(card);
     })
     .catch((err) => {
       console.log(err);
