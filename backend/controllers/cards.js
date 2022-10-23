@@ -36,8 +36,8 @@ const createCard = (req, res, next) => {
 const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
 
-  Card.findById(cardId);
-  orFail()
+  Card.findById(cardId)
+  .orFail()
     .then((card) => {
       if (!card) {
         throw new NotFoundError("No card with matching ID found");
@@ -45,8 +45,8 @@ const deleteCard = (req, res, next) => {
       if (!card.owner._id.equals(req.user._id)) {
         throw new Error("Access denied");
       }
-      Card.findByIdAndRemove({ cardId });
-      orFail().then((card) => {
+      Card.findByIdAndRemove(cardId)
+      .orFail().then((card) => {
         res.status(200).send({ data: card });
       });
     })

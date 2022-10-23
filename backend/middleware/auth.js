@@ -19,8 +19,6 @@ const auth = (req, res, next) => {
     let payload;
 
     try {
-        // console.log('token', token);
-        // console.log('secret', JWT_SECRET);
         payload = jwt.verify(token, JWT_SECRET);
     } catch (err) {
         console.log(err);

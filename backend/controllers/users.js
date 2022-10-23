@@ -54,7 +54,7 @@ const createUser = (req, res, next) => {
     .then((data) => res.status(201).send(data))
     .catch((err) => {
       console.log(err);
-      // next(err);
+      next(err);
     });
 }; //  CreateUser gets passed to OnRegister in App.js
 
@@ -94,7 +94,6 @@ const updateAvatar = (req, res) => {
 };
 
 const { JWT_SECRET } = process.env;
-// console.log(JWT_SECRET)
 
 const login = (req, res) => {
   const { email, password } = req.body;
@@ -103,7 +102,7 @@ const login = (req, res) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      res.send({ user, token }); // HERE?
+      res.send({ user, token });
     })
     .catch((err) => {
       console.log(err);
@@ -118,7 +117,6 @@ const getCurrentUser = (req, res, next) => {
         throw new BadRequestError("Bad request");
       }
       return res.status(200).send(user);
-      // return res.status(200).send({ data: user });
     })
     .catch((err) => {
       console.log(err);

@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route, useHistory, Redirect } from "react-router-dom";
+import { Switch, Route, useHistory } from "react-router-dom";
 
 import "../index.css";
 
@@ -42,50 +42,22 @@ function App() {
 
   const history = useHistory();
 
-  // React.useEffect(() => {
-  //   if (token) {
-  //     isLoggedIn &&
-  //       api
-  //         .getUserInfo(token)
-  //         .then((user) => {
-  //           setCurrentUser(user);
-  //         })
-  //         .catch((err) => console.log(err))
-  //   }
-  // }, [token, isLoggedIn]);
-
   React.useEffect(() => {
     if (isLoggedIn) {
       api
         .getUserInfo()
         .then((user) => {
-          // console.log('line 61, getUserInfo', user)
           setCurrentUser(user);
         })
         .catch((err) => console.log(err));
     }
   }, [isLoggedIn]);
 
-  // React.useEffect(() => {
-  //   if (token) {
-  //     isLoggedIn &&
-  //       api
-  //         .getCardsList(token)
-  //         .then((res) => {
-  //           console.log(res);
-
-  //           setCards(res.data);
-  //         })
-  //         .catch((err) => console.log(err))
-  //   }
-  // }, [token, isLoggedIn]);
-
   React.useEffect(() => {
     if (isLoggedIn) {
       api
         .getCardsList()
         .then((res) => {
-          // console.log(res);
           setCards(res.data);
         })
         .catch((err) => console.log(err));
@@ -114,7 +86,7 @@ function App() {
     });
     api
       .changeLikeCardStatus(card._id, isLiked)
-      
+
       .then((newCard) => {
         setCards((state) =>
           state.map((currentCard) =>
@@ -131,7 +103,7 @@ function App() {
       .deleteCard(card._id)
       .then(() => {
         setCards(cards.filter((stateCard) => stateCard !== card));
-        closeAllPopups(); 
+        closeAllPopups();
       })
       .catch(() => console.log("something went wrong"))
       .finally(() => {
@@ -187,40 +159,16 @@ function App() {
       });
   }
 
-  // function onRegister({ email, password }) {
-  //   auth
-  //     .register(email, password)
-  //     .then((res) => {
-  //       setIsInfoTooltipOpen(true);
-  //       if (res.data._id) {
-  //         setIsSuccess("success");
-  //         setTimeout(() => {
-  //           history.push("/signin");
-  //           setIsInfoTooltipOpen(false);
-  //         }, 3000);
-  //       } else {
-  //         setIsSuccess("fail");
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       setIsSuccess("fail");
-  //       setIsInfoTooltipOpen(true);
-  //     });
-  // }
-
   function onRegister({ email, password }) {
     auth
       .register(email, password)
       .then((res) => {
-        // console.log('here');
         if (res) {
-          console.log(res);
           setIsSuccess("success");
-          setTimeout(() => {
+          // setTimeout(() => {
             setIsInfoTooltipOpen(true);
-            // console.log("registered");
             history.push("/signin");
-          }, 3000);
+          // }, 3000);
         } else {
           setIsSuccess("fail");
         }
@@ -240,7 +188,6 @@ function App() {
         if (res) {
           setIsLoggedIn(true);
           setEmail(email);
-          // console.log(res.user);
           setCurrentUser(res.user);
           setToken(res.token);
           localStorage.setItem("jwt", res.token);
@@ -248,10 +195,10 @@ function App() {
         } else {
           setIsSuccess("fail");
           setIsInfoTooltipOpen(true);
-          // setTimeout(() => {
-          history.push("/signup");
-          setIsInfoTooltipOpen(false);
-          // }, 3000);
+          setTimeout(() => {
+            history.push("/signup");
+            setIsInfoTooltipOpen(false);
+          }, 3000);
         }
       })
       .catch((err) => {
@@ -271,10 +218,6 @@ function App() {
             setEmail(res.email);
             setIsLoggedIn(true);
             history.push("/");
-          } else {
-            setIsLoggedIn(false);
-            history.push("/signin");
-            localStorage.removeItem("jwt");
           }
         })
         .catch((err) => console.log(err));
@@ -385,9 +328,10 @@ function App() {
             <Register onRegister={onRegister} />
           </Route>
 
-          <Route>
+          {/* <Route>
             {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
-          </Route>
+          </Route> */}
+
         </Switch>
         <InfoToolTip
           isOpen={isInfoTooltipOpen}

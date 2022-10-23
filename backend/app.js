@@ -3,13 +3,10 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const { errors } = require('celebrate');
 const helmet = require('helmet');
-// const { createUser, login } = require('./controllers/users')
 const auth = require('./middleware/auth');
 const { errorHandler } = require("./middleware/errorHandler");
 const { requestLogger, errorLogger } = require('./middleware/logger');
 require('dotenv').config();
-
-// console.log(process.env.NODE_ENV);
 
 const app = express();
 const { PORT = 3001 } = process.env;

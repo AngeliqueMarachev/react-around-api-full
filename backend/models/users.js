@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    // unique: true,
+    unique: true,
     // ensures multiple users with the same e-mail won't end up in the database
     validate: {
       validator(value) {
@@ -40,7 +40,6 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    // unique: true,
     select: false,
     validate: {
       validator(value) {
