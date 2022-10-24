@@ -56,13 +56,13 @@ function App() {
   React.useEffect(() => {
     if (isLoggedIn) {
       api
-        .getCardsList()
+        .getCardsList(token)
         .then((res) => {
           setCards(res.data);
         })
         .catch((err) => console.log(err));
     }
-  }, [isLoggedIn]);
+  }, [token, isLoggedIn]);
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -165,10 +165,11 @@ function App() {
       .then((res) => {
         if (res) {
           setIsSuccess("success");
-          // setTimeout(() => {
+          const timer = setTimeout(() => {
             setIsInfoTooltipOpen(true);
             history.push("/signin");
-          // }, 3000);
+            clearTimeout(timer);
+          }, 1000);
         } else {
           setIsSuccess("fail");
         }
