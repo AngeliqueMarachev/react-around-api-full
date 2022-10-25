@@ -16,3 +16,4 @@ The API of "Around the U.S." with authorization and registration handled by the 
 * a link to repository with the complete React application which uses API
 * a link to the website that hosts API.
 
+## [Check out this project live!](https://aroundexp.students.nomoredomainssbs.ru/)
