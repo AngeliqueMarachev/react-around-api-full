@@ -1,5 +1,5 @@
-// const BASE_URL = "http://localhost:3001";
-const BASE_URL = "https://aroundexp.students.nomoredomainssbs.ru";
+const BASE_URL = "http://localhost:3000";
+// const BASE_URL = "https://aroundexp.students.nomoredomainssbs.ru";
 
 const checkResponse = (res) => {
   if (!res.ok) {
