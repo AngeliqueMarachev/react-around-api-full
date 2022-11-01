@@ -13,11 +13,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: 2,
     maxlength: 30,
-   default: 'Explorer'
+    default: 'Explorer',
   },
   avatar: {
     type: String,
-   default: 'https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg',
+    default: 'https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg',
     validate: {
       validator(value) {
         return validator.isURL(value);
@@ -46,8 +46,8 @@ const userSchema = new mongoose.Schema({
         return validator.isStrongPassword(value);
       },
       message: 'Invalid password',
-    }
-  }
+    },
+  },
 });
 
 userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
@@ -57,7 +57,8 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(email,
       if (!user) {
         return Promise.reject(new Error('Incorrect email or password'));
       }
-      return bcrypt.compare(password, user.password) // compare the hash result with the hash in the database
+      return bcrypt.compare(password, user.password)
+      // compare the hash result with the hash in the database
         .then((matched) => {
           if (!matched) {
             return Promise.reject(new Error('Incorrect email or password'));
@@ -69,4 +70,3 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(email,
 };
 
 module.exports = mongoose.model('user', userSchema);
-

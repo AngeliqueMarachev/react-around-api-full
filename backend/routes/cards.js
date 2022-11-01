@@ -30,7 +30,8 @@ router.get(
   celebrate({
     headers: authValidation,
   }),
-  getCards);
+  getCards,
+);
 
 router.post(
   '/cards',
@@ -51,19 +52,19 @@ router.delete(
 );
 
 router.put(
-    '/cards/:cardId/likes',
-    celebrate({
-      params: cardIdValidation,
-      headers: authValidation,
-    }),
-    likeCard,
-  );
+  '/cards/:cardId/likes',
+  celebrate({
+    params: cardIdValidation,
+    headers: authValidation,
+  }),
+  likeCard,
+);
 
 router.delete(
   '/cards/:cardId/likes',
   celebrate({
-      params: cardIdValidation,
-      headers: authValidation,
+    params: cardIdValidation,
+    headers: authValidation,
   }),
   dislikeCard,
 );

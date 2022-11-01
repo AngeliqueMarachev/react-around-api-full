@@ -5,7 +5,7 @@ const cors = require('cors');
 const { errors } = require('celebrate');
 const helmet = require('helmet');
 const auth = require('./middleware/auth');
-const { errorHandler } = require("./middleware/errorHandler");
+const { errorHandler } = require('./middleware/errorHandler');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 
 const app = express();
@@ -15,6 +15,7 @@ mongoose.connect('mongodb://localhost:27017/aroundb');
 
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
+const NotFoundError = require('./errors/notFoundError');
 
 app.use(helmet());
 app.use(express.json());
@@ -37,9 +38,7 @@ app.get('/crash-test', () => {
 app.use('/', userRouter);
 app.use('/', auth, cardRouter);
 
-app.use((req, res) => {
-    res.status(404).send({ message: 'Requested resource not found app.js' });
-});
+app.use('*', NotFoundError);
 
 app.use(errorLogger);
 
@@ -49,5 +48,5 @@ app.use(errors());
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-    console.log(`App listening on port ${PORT}`);
+  console.log(`App listening on port ${PORT}`);
 });

@@ -1,20 +1,20 @@
-const bcrypt = require("bcryptjs"); // for hashing password
-const User = require("../models/users");
-const jwt = require("jsonwebtoken");
+const bcrypt = require('bcryptjs'); // for hashing password
+const jwt = require('jsonwebtoken');
+const User = require('../models/users');
 
-const NotFoundError = require("../errors/notFoundError");
-const BadRequestError = require("../errors/badRequest");
+const NotFoundError = require('../errors/notFoundError');
+const BadRequestError = require('../errors/badRequest');
+const NoAuthError = require('../errors/noAuthError');
 
 const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
       if (!users) {
-        throw new NotFoundError("No users to display");
+        throw new NotFoundError('No users to display');
       }
       return res.status(200).send({ data: users });
     })
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 };
@@ -23,11 +23,10 @@ const getUser = (req, res, next) => {
   const { userId } = req.params;
   User.findById(userId)
     .orFail(() => {
-      throw new NotFoundError("No user with matching ID");
+      throw new NotFoundError('No user with matching ID');
     })
     .then((selectedUser) => res.status(200).send(selectedUser))
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 };
@@ -38,22 +37,15 @@ const createUser = (req, res, next) => {
   User.findOne({ email })
     .then((user) => {
       if (user) {
-        throw new BadRequestError(
-          "The user with the provided email already exists"
-        );
-      } else {
-        return bcrypt.hash(password, 10);
+        return next(new BadRequestError(409, 'Conflict'));
       }
+      return bcrypt.hash(password, 10);
     })
-    .then((hash) =>
-      User.create({
-        email,
-        password: hash,
-      })
-    )
-    .then((data) => res.status(201).send(data))
+    .then((hash) => User.create({
+      email,
+      password: hash,
+    }))
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 }; //  CreateUser gets passed to OnRegister in App.js
@@ -65,12 +57,11 @@ const updateUserData = (req, res, next) => {
   User.findByIdAndUpdate(id, body, { new: true, runValidators: true })
     .then((updatedUser) => {
       if (!updatedUser) {
-        throw new NotFoundError("No user with ID found");
+        throw new NotFoundError('No user with ID found');
       }
       res.status(200).send(updatedUser);
     })
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 };
@@ -79,7 +70,7 @@ const updateUser = (req, res) => {
   const { name, about } = req.body;
 
   if (!name || !about) {
-    throw new NotFoundError("Please update these fields");
+    throw new BadRequestError('Please update these fields');
   }
   return updateUserData(req, res);
 };
@@ -88,7 +79,7 @@ const updateAvatar = (req, res) => {
   const { avatar } = req.body;
 
   if (!avatar) {
-    throw new NotFoundError("Please update avatar");
+    throw new BadRequestError('Please update avatar');
   }
   return updateUserData(req, res);
 };
@@ -100,13 +91,13 @@ const login = (req, res) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
-        expiresIn: "7d",
+        expiresIn: '7d',
       });
-      res.send({ user, token });
+      res.send({ token });
     })
     .catch((err) => {
-      console.log(err);
-      res.status(401).send(err); // If the user from userSchema isn't found, catch is triggered
+      throw new NoAuthError(err.message);
+      // If the user from userSchema isn't found, catch is triggered
     });
 };
 
@@ -114,12 +105,11 @@ const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        throw new BadRequestError("Bad request");
+        throw new NotFoundError('Requested resource not found');
       }
       return res.status(200).send(user);
     })
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 };
@@ -132,5 +122,4 @@ module.exports = {
   updateUser,
   updateAvatar,
   login,
-  getCurrentUser,
 };

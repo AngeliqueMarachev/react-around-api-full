@@ -5,5 +5,4 @@ module.exports.validateURL = (value, helpers) => {
     return value;
   }
   return helpers.error('string.uri');
-}
-
+};

@@ -1,32 +1,27 @@
-/* eslint-disable indent */
 const jwt = require('jsonwebtoken');
 require('dotenv').config({ path: '../.env' });
+const NoAuthError = require('../errors/noAuthError');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
-
-const handleAuthError = (res) => {
-    res.status(401).send({ message: 'Authorization Error' });
-};
+const { JWT_SECRET = 'secret-code' } = process.env;
 
 const auth = (req, res, next) => {
-    const { authorization } = req.headers;
+  const { authorization } = req.headers;
 
-    if (!authorization || !authorization.startsWith('Bearer ')) {
-        return handleAuthError(res);
-    }
-    const token = authorization.replace('Bearer ', '');
+  if (!authorization || !authorization.startsWith('Bearer ')) {
+    return next(new NoAuthError('You are not authorized to perform this action'));
+  }
+  const token = authorization.replace('Bearer ', '');
 
-    let payload;
+  let payload;
 
-    try {
-        payload = jwt.verify(token, JWT_SECRET);
-    } catch (err) {
-        console.log(err);
-        return handleAuthError(res);
-    }
+  try {
+    payload = jwt.verify(token, JWT_SECRET);
+  } catch (err) {
+    return next(new NoAuthError('You are not authorized to perform this action'));
+  }
 
-    req.user = payload;
-    return next();
+  req.user = payload;
+  return next();
 };
 
 module.exports = auth;

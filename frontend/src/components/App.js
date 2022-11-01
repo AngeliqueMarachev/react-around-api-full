@@ -127,11 +127,9 @@ function App() {
 
   function handleUpdateAvatar({ avatar }) {
     setIsLoading(true);
-    console.log(avatar);
     api
       .setUserAvatar(avatar)
       .then((res) => {
-        console.log(res);
         setCurrentUser({
           ...currentUser,
           avatar: res.avatar,
@@ -175,10 +173,8 @@ function App() {
         }
       })
       .catch((err) => {
-        console.log(err);
         setIsSuccess("fail");
         setIsInfoTooltipOpen(true);
-        console.log("!onregister");
       });
   }
 
@@ -203,7 +199,6 @@ function App() {
         }
       })
       .catch((err) => {
-        console.log(err);
         setIsSuccess("fail");
         setIsInfoTooltipOpen(true);
       });
