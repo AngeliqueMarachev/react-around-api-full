@@ -38,18 +38,9 @@ app.get('/crash-test', () => {
 app.use('/', userRouter);
 app.use('/', auth, cardRouter);
 
-// 1. Instead of returning the response directly,
-// it should throw the corresponding exception.
-// app.use((req, res) => {
-//   res.status(404).send({ message: 'Requested resource not found app.js' });
-// });
 
-// 2.  Returns a default error with 500 status code instead of 404
-// app.use('*', NotFoundError);
-
-// 3.
-app.use('*', function(req, res){
-  res.send(NotFoundError);
+app.use('*', function(req, res, next){
+ next(new NotFoundError('Requested ressource not found'))
 });
 
 app.use(errorLogger);

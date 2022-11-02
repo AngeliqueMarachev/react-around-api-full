@@ -47,10 +47,8 @@ const createUser = (req, res, next) => {
       email,
       password: hash,
     }))
-    // .then((data) => res.status(201).send(data))
     .then((user) => {
-      console.log(userObj)
-      const { password, ...userObj } = user;
+      const { password, ...userObj } = user.toObject()
       res.status(201).send(userObj);
       })
     .catch((err) => {
