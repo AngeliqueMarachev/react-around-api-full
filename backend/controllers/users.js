@@ -47,6 +47,12 @@ const createUser = (req, res, next) => {
       email,
       password: hash,
     }))
+    // .then((data) => res.status(201).send(data))
+    .then((user) => {
+      console.log(userObj)
+      const { password, ...userObj } = user;
+      res.status(201).send(userObj);
+      })
     .catch((err) => {
       next(err);
     });
@@ -86,7 +92,7 @@ const updateAvatar = (req, res) => {
   return updateUserData(req, res);
 };
 
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET = 'secret-code' } = process.env;
 
 const login = (req, res) => {
   const { email, password } = req.body;
@@ -97,8 +103,8 @@ const login = (req, res) => {
       });
       res.send({ token });
     })
-    .catch((err) => {
-      throw new NoAuthError(err.message);
+    .catch(() => {
+      next(new NoAuthError('Incorrect email or password'));
       // If the user from userSchema isn't found, catch is triggered
     });
 };

@@ -37,22 +37,6 @@ const createCard = (req, res, next) => {
 };
 
 // DELETE
-// const deleteCard = (req, res, next) => {
-//   const { cardId } = req.params;
-
-//   Card.findById(cardId)
-//     .orFail(() => {
-//       throw new NotFoundError('No card with matching ID found');
-//     })
-//     .then((card) => {
-//       if (!card.owner._id.equals(req.user._id)) {
-//         throw new ForbiddenError('Access denied');
-//       } else {
-//         Card.findByIdAndRemove(cardId).then((deleteCard) => res.send(deleteCard));
-//       }
-//     })
-//     .catch(next);
-// };
 const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   Card.findById(cardId)
@@ -79,7 +63,7 @@ const likeCard = (req, res, next) => {
     .orFail()
     .then((card) => res.status(200).send(card))
     .catch((err) => {
-      if (err.name === 'NotFoundError') {
+      if (err.name === 'DocumentNotFoundError') {
         throw new NotFoundError('No card with matching ID');
       } else if (err.name === 'CastError') {
         throw new BadRequestError();
