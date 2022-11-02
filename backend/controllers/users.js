@@ -5,6 +5,7 @@ const User = require('../models/users');
 const NotFoundError = require('../errors/notFoundError');
 const BadRequestError = require('../errors/badRequest');
 const NoAuthError = require('../errors/noAuthError');
+const DuplicateKeyError = require('../errors/duplicateKeyError');
 
 const getUsers = (req, res, next) => {
   User.find({})
@@ -37,9 +38,10 @@ const createUser = (req, res, next) => {
   User.findOne({ email })
     .then((user) => {
       if (user) {
-        return next(new BadRequestError(409, 'Conflict'));
+        throw new DuplicateKeyError("The user with the provided email already exists");
+      } else {
+        return bcrypt.hash(password, 10);
       }
-      return bcrypt.hash(password, 10);
     })
     .then((hash) => User.create({
       email,
